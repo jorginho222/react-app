@@ -1,26 +1,36 @@
-import {Button} from "./components/Button";
-import Alert from "./components/Alert";
-import {useEffect, useRef, useState} from "react";
+import {useReducer} from "react";
+
+enum NameActionKind {
+    SET_NAME = 'SET_NAME'
+}
+
+interface NameAction {
+    type: NameActionKind,
+    payload: string
+}
+
+interface NameState {
+    names: [],
+    name: string
+}
 
 function App() {
-    const [alertVisible, setAlertVisible] = useState(false)
-    let [counter, setCounter] = useState(0)
-    const increment = () => setCounter(counter => counter + 1)
-    useEffect(() => {
-        console.log(alertVisible)
-    }, [alertVisible])
-
+    const [state, dispatch] = useReducer((state: NameState, action: NameAction) => {
+        const { type, payload } = action
+        switch (type) {
+            case NameActionKind.SET_NAME:
+                return { ...state, name: payload } // Creating a new object. It takes all the actual value of state, and mutate the fields I want
+        }
+    }, {
+        names: [],
+        name: '',
+    })
     return <>
-        { alertVisible &&
-          <Alert onClose={() => setAlertVisible(false)}>My alert</Alert> }
-        <Button
-          color={'success'}
-          onClick={() => setAlertVisible(true)}
-        >
-            My button
-        </Button>
-        <button onClick={increment}>Aum</button>
-        {counter}
+        <input
+          value={state.name}
+          onChange={e => dispatch({ type: NameActionKind.SET_NAME, payload: e.target.value })}
+        />
+        <div>{state.name}</div>
     </>
 }
 export default App
