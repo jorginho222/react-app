@@ -1,36 +1,32 @@
-import {useReducer} from "react";
+import {useEffect, useState} from "react";
 
-enum NameActionKind {
-    SET_NAME = 'SET_NAME'
-}
+export function App() {
+  const [names, setNames] = useState([])
 
-interface NameAction {
-    type: NameActionKind,
-    payload: string
-}
+  useEffect(() => {
+    fetch('/names.json')
+      .then(res => res.json())
+      .then(data => setNames(data))
+  }, [])
 
-interface NameState {
-    names: [],
-    name: string
-}
+  const [selectedNameData, setSelectedNameData] = useState()
 
-function App() {
-    const [state, dispatch] = useReducer((state: NameState, action: NameAction) => {
-        const { type, payload } = action
-        switch (type) {
-            case NameActionKind.SET_NAME:
-                return { ...state, name: payload } // Creating a new object. It takes all the actual value of state, and mutate the fields I want
-        }
-    }, {
-        names: [],
-        name: '',
-    })
-    return <>
-        <input
-          value={state.name}
-          onChange={e => dispatch({ type: NameActionKind.SET_NAME, payload: e.target.value })}
-        />
-        <div>{state.name}</div>
-    </>
+  const onSelectedNameChange = (name: string) => {
+    fetch(`/${name}.json`)
+      .then(response => response.json())
+      .then(data => setSelectedNameData(data))
+  }
+
+  return (
+    <div>
+      <div>
+        {names.map((name, index) =>(
+          <button key={index} onClick={() => onSelectedNameChange(name)}>{name}</button>
+        ))}
+      </div>
+      <div>
+        {JSON.stringify(selectedNameData)}
+      </div>
+    </div>
+  )
 }
-export default App
