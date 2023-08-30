@@ -1,6 +1,9 @@
 import {useReducer, useState} from "react";
+interface NameListProps {
+  onNameInserted: (names: []) => void
+}
 
-export function NameList() {
+export function NameList({onNameInserted}: NameListProps) {
   enum NameActionKind {
     SET_NAME = 'SET_NAME',
     ADD_NAME = 'ADD_NAME'
@@ -38,12 +41,22 @@ export function NameList() {
       value={state.name}
       onChange={e => dispatch({ type: NameActionKind.SET_NAME, payload: e.target.value })}
     />
-    <button onClick={() => dispatch({ type: NameActionKind.ADD_NAME })}>Insert</button>
-    <div>
-      { state.names.map((name: string, index: number) => (
-          <div key={index}>{name}</div>
-        )
-      )}
-    </div>
+    <button onClick={() => {
+      dispatch({type: NameActionKind.ADD_NAME})
+      onNameInserted(state.names)
+    }}>Insert</button>
+
+    { state.names.length > 0 &&
+      <select> {
+          state.names.map((name: string, index: number) => (
+            <option key={index} value={name}>{name}</option>
+          ))
+        }
+      </select> }
+
+    {/*{ state.names.map((name: string, index: number) => (*/}
+    {/*    <div key={index}>{name}</div>*/}
+    {/*  )*/}
+    {/*)}*/}
   </>
 }

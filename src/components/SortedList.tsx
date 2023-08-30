@@ -1,10 +1,12 @@
 import {useMemo} from "react";
+interface SortedListProps {
+  list: [],
+  sortFunc: () => number
+}
 
-export function SortedList({list, sortFunc}) {
-  console.log('SortedList render')
+export function SortedList({list, sortFunc}: SortedListProps) {
   const sortedList = useMemo(
     () => {
-      console.log('Running sort')
       return [...list].sort(sortFunc)
     },
     [list]

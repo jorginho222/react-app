@@ -1,5 +1,6 @@
 import {useCallback, useMemo, useState} from "react";
 import {SortedList} from "./SortedList";
+import {NameList} from "./NameList";
 
 export function UseMemo() {
   const [numbers] = useState([10,20,30])
@@ -8,8 +9,8 @@ export function UseMemo() {
     [numbers]
   ) // looking for changes in numbers array
 
-  const [names] = useState(['Gachi', 'Pachi', 'Cachi'])
-  const sortedNames = useMemo(() => [...names].sort(), [names])
+  const [names, setNames] = useState([])
+  // const sortedNames = useMemo(() => [...names].sort(), [names])
   const [count1, setCount1] = useState(0)
   const [count2, setCount2] = useState(0)
   const countTotal = useMemo(() => count1 + count2, [count1, count2])
@@ -18,14 +19,14 @@ export function UseMemo() {
 
   return (
     <>
-      <div>Total: {total}</div>
-      <div>Names: {names.join(', ')}</div>
+      <div className="mt-3">Total (Use effect, se carga una vez): {total}</div>
       <SortedList list={names} sortFunc={sortFunc} />
-      <div>
+      <div className="mt-3">
         <button onClick={() => setCount1(count1 + 1)}>Count1: {count1}</button>
         <button onClick={() => setCount2(count2 + 1)}>Count2: {count2}</button>
       </div>
-      <div>Total: {countTotal}</div>
+      <div className="mt-3">Total: {countTotal}</div>
+      <NameList onNameInserted={(names) => setNames(names)} />
     </>
   );
 }
